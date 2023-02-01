@@ -32,7 +32,6 @@ public class CoordinateLabeler : MonoBehaviour
 
         SetLabelColor();
         ToggleLabels();
-
     }
 
     void SetLabelColor()
