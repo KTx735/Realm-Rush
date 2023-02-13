@@ -5,14 +5,18 @@ using UnityEngine;
 [RequireComponent(typeof(Enemy))]
 public class EnemyMover : MonoBehaviour
 {
-    [SerializeField] List<Waypoint> path = new List<Waypoint>();
+    List<Node> path = new List<Node>();
     [SerializeField] [Range(0f, 5f)] float speed = 1f;
 
     Enemy enemy;
+    PathFinder pathfinder;
+    GridManager gridmanager;
 
-    void Start() 
+    void Awake() 
     {
         enemy = GetComponent<Enemy>();
+        gridmanager = FindObjectOfType<GridManager>();
+        pathfinder =FindObjectOfType<PathFinder>();
     }
 
     void OnEnable()
@@ -26,22 +30,12 @@ public class EnemyMover : MonoBehaviour
     {
         path.Clear();
 
-        GameObject parent= GameObject.FindGameObjectWithTag("Path");
-
-        foreach(Transform child in parent.transform) 
-        {
-            Waypoint waypoint = child.GetComponent<Waypoint>();
-
-            if(waypoint != null)
-            {
-            path.Add(waypoint);
-            }
-        }
+        path = pathfinder.GetNewPath();
     }
 
     void ReturnToStart()
     {
-        transform.position = path[0].transform.position;
+        transform.position = gridmanager.GetPositionFromCoordinates(pathfinder.StartCoordinates);
     }
 
     void FinishPath()
@@ -52,10 +46,10 @@ public class EnemyMover : MonoBehaviour
 
     IEnumerator FollowPath() 
     {
-        foreach(Waypoint waypoint in path) 
+        for(int i = 0; i<path.Count; i++) 
         {
             Vector3 startPosition = transform.position;
-            Vector3 endPosition = waypoint.transform.position;
+            Vector3 endPosition = gridmanager.GetPositionFromCoordinates(path[i].coordinates);
             float travelPercent = 0f;
 
             transform.LookAt(endPosition);
