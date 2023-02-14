@@ -6,7 +6,7 @@ public class Enemy : MonoBehaviour
 {
 
     [SerializeField] int goldReward = 25;
-    [SerializeField] int goldPenalty = 25;
+    [SerializeField] int goldPenalty = 100;
 
     //Reference to access bank
     Bank bank;
